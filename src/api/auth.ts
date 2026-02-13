@@ -22,3 +22,10 @@ export const loginUser = async (data: {
   const response = await client.post('/auth/login', data);
   return response.data;
 };
+
+export const getOrders = async () => {
+  const response = await client.get('/orders');
+  console.log(response.data[0]);
+  return response.data.data;
+};
+

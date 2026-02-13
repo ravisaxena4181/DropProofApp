@@ -7,14 +7,14 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert, 
-  ActivityIndicator
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { loginUser } from '../api/auth';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -48,14 +48,11 @@ export default function SignIn({ navigation }: Props) {
       });
 
       console.log('Login Success:', response);
-
-      navigation.replace('Home');
+      await AsyncStorage.setItem('token', response.data.token);
+      navigation.replace('Profile');
     } catch (error: any) {
-      console.log('LOGIN ERROR:', error.response?.data);
-      Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Login failed'
-      );
+      console.log('LOGIN ERROR:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -86,7 +83,7 @@ export default function SignIn({ navigation }: Props) {
             style={styles.input}
             autoCapitalize="none"
             value={formData.username}
-            onChangeText={(text) => handleChange('username', text)}
+            onChangeText={text => handleChange('username', text)}
           />
         </View>
 
@@ -98,7 +95,7 @@ export default function SignIn({ navigation }: Props) {
             secureTextEntry
             style={styles.input}
             value={formData.password}
-            onChangeText={(text) => handleChange('password', text)}
+            onChangeText={text => handleChange('password', text)}
           />
         </View>
 
@@ -119,25 +116,22 @@ export default function SignIn({ navigation }: Props) {
 
       <View style={styles.bottomSection}>
         <TouchableOpacity
-  style={styles.loginButton}
-  onPress={handleLogin}
-  disabled={loading}
->
-  {loading ? (
-    <ActivityIndicator color="#fff" />
-  ) : (
-    <>
-      <Text style={styles.loginText}>Log in</Text>
-      <Feather name="arrow-right" size={18} color="#fff" />
-    </>
-  )}
-</TouchableOpacity>
-
+          style={styles.loginButton}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Text style={styles.loginText}>Log in</Text>
+              <Feather name="arrow-right" size={18} color="#fff" />
+            </>
+          )}
+        </TouchableOpacity>
 
         <View style={styles.bottomRow}>
-          <Text style={{ color: '#777' }}>
-            Don’t have an account?{' '}
-          </Text>
+          <Text style={{ color: '#777' }}>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.linkText}>Register now</Text>
           </TouchableOpacity>
@@ -267,4 +261,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-

@@ -8,13 +8,17 @@ import SignatureScreen from '../screens/SignatureScreen';
 import SplashScreen from '../screens/SplashScreen';
 import SignIn from '../screens/SignIn';
 import Register from '../screens/Register';
+import Profile from '../screens/Profile';
+import DeliveriesScreen from '../screens/DeliveriesScreen';
 
 export type RootStackParamList = {
   SplashScreen: undefined;
   Home: undefined;
   SignIn: undefined;
   Register: undefined;
+  Profile: undefined;
   Deliveries: undefined;
+  DeliveriesScreen: undefined;
   DeliveryDetail: { id: string } | undefined;
   MapTrack: { id: string } | undefined;
   Signature: { id: string } | undefined;
@@ -29,7 +33,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Deliveries" component={DeliveryListScreen} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="DeliveriesScreen" component={DeliveriesScreen} />
       <Stack.Screen name="DeliveryDetail" component={DeliveryDetailScreen} />
       <Stack.Screen name="MapTrack" component={MapTrackScreen} />
       <Stack.Screen name="Signature" component={SignatureScreen} />
