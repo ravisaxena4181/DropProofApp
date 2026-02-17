@@ -1,33 +1,42 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type Delivery = {
-  id: string;
-  address: string;
-  status: 'pending' | 'out_for_delivery' | 'completed';
-  lat?: number;
-  lng?: number;
+type User = {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
 };
 
-type State = {
-  deliveries: Delivery[];
-  loadMockDeliveries: () => void;
-  getDeliveryById: (id: string) => Delivery | null;
-  completeDelivery: (id: string) => void;
+type AuthState = {
+  token: string | null;
+  user: User | null;
+  setAuth: (token: string, user: User) => void;
+  logout: () => void;
 };
 
-const useStore = create<State>((set, get) => ({
-  deliveries: [],
-  loadMockDeliveries: () =>
-    set({
-      deliveries: [
-        { id: '1', address: '123 Main St', status: 'pending', lat: 37.7749, lng: -122.4194 },
-        { id: '2', address: '456 Pine Ave', status: 'out_for_delivery', lat: 37.7849, lng: -122.4094 },
-      ],
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      token: null,
+      user: null,
+
+      setAuth: (token, user) =>
+        set({
+          token,
+          user,
+        }),
+
+      logout: () =>
+        set({
+          token: null,
+          user: null,
+        }),
     }),
-  getDeliveryById: (id: string) => get().deliveries.find((d) => d.id === id) ?? null,
-  completeDelivery: (id: string) =>
-    set((state) => ({ deliveries: state.deliveries.map((d) => (d.id === id ? { ...d, status: 'completed' } : d)) })),
-}));
-
-export type { Delivery };
-export default useStore;
+    {
+      name: 'auth-storage', 
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);

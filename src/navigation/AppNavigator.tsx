@@ -1,7 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
-import DeliveryListScreen from '../screens/DeliveryListScreen';
 import DeliveryDetailScreen from '../screens/DeliveryDetailScreen';
 import MapTrackScreen from '../screens/MapTrackScreen';
 import SignatureScreen from '../screens/SignatureScreen';
@@ -35,7 +34,9 @@ export default function AppNavigator() {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="DeliveriesScreen" component={DeliveriesScreen} />
+
       <Stack.Screen name="DeliveryDetail" component={DeliveryDetailScreen} />
+      
       <Stack.Screen name="MapTrack" component={MapTrackScreen} />
       <Stack.Screen name="Signature" component={SignatureScreen} />
     </Stack.Navigator>

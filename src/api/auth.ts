@@ -1,4 +1,5 @@
 import client from './client.ts';
+import { useAuthStore } from '../store/useStore.ts';
 
 export const registerUser = async (data: {
   username: string;
@@ -10,7 +11,8 @@ export const registerUser = async (data: {
 }) => {
   console.log(data);
   const response = await client.post('/auth/register', data);
-  console.log(response);
+  const { setAuth } = useAuthStore.getState();
+  setAuth(response.data.data.token,response.data.data.user);
   return response.data;
 };
 
@@ -18,14 +20,18 @@ export const loginUser = async (data: {
   username: string;
   password: string;
 }) => {
-  console.log(data);
   const response = await client.post('/auth/login', data);
+  const { setAuth } = useAuthStore.getState();
+  setAuth(response.data.data.token,response.data.data.user);
   return response.data;
 };
 
 export const getOrders = async () => {
   const response = await client.get('/orders');
-  console.log(response.data[0]);
   return response.data.data;
 };
 
+export const getOrderById = async (id: number) => {
+  const response = await client.get(`/orders/${id}`);
+  return response.data.data; 
+};

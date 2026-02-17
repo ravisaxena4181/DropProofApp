@@ -1,49 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Text,
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 import AppTemplate from '../components/Template';
+import { useAuthStore } from '../store/useStore';
 
 const SplashScreen = ({ navigation }: any) => {
-  const [appVersion, setAppVersion] = useState<string | null>(null);
-
+  const token = useAuthStore((state) => state.token);
   useEffect(() => {
-    let mounted = true;
+    const nextRoute = token ? "Profile" : "Home";
 
-    async function init() {
-      try {
-        const pkg = require('../../../package.json');
-        if (mounted) setAppVersion(pkg.version || null);
-      } catch (e) {
-        console.log(e);
-      }
+    const timer = setTimeout(() => {
+      navigation.replace(nextRoute);
+    }, 2000);
 
-      let nextRoute = 'Home';
-      try {
-        const AsyncStorage =
-        require('@react-native-async-storage/async-storage').default;
-        const token = await AsyncStorage.getItem('authToken');
-        const onboard = await AsyncStorage.getItem('hasOnboarded');
-        if (!onboard) nextRoute = 'Home';
-        else if (token) nextRoute = 'Home';
-        else nextRoute = 'Home';
-      } catch (err) {
-        console.log(err);
-      }
+    return () => clearTimeout(timer);
+  }, [token, navigation]);
 
-      setTimeout(() => {
-        navigation.replace(nextRoute);
-      }, 2000);
-    }
-
-    init();
-
-    return () => {
-      mounted = false;
-    };
-  }, [navigation]);
 
   return (
     <AppTemplate>
@@ -55,9 +30,7 @@ const SplashScreen = ({ navigation }: any) => {
         style={{ marginTop: 12 }}
       />
 
-      {appVersion ? (
-        <Text style={styles.version}>v{appVersion}</Text>
-      ) : null}
+      
     </AppTemplate>
   );
 };

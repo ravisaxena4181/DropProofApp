@@ -10,12 +10,13 @@ import {
 } from 'react-native';
 import { getOrders } from '../api/auth';
 import HomeTemplate from '../components/HomeTemplate';
+import { useNavigation } from '@react-navigation/native';
 
 export default function DeliveriesScreen() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'Pending' | 'InRoute' | 'Delivered'>('Pending');
-
+  const navigation  = useNavigation<any>();
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -23,8 +24,7 @@ export default function DeliveriesScreen() {
   const fetchOrders = async () => {
     try {
       const data = await getOrders(); 
-      console.log(data);
-      setOrders(data);
+      setOrders(data.data);
     } catch (error: any) {
       console.log(error);
       Alert.alert('Error', 'Failed to fetch deliveries');
@@ -85,7 +85,10 @@ export default function DeliveriesScreen() {
   </View>
 </View>
 
-      <TouchableOpacity style={styles.actionBtn}>
+      <TouchableOpacity 
+      style={styles.actionBtn}
+      onPress={() => navigation.navigate('DeliveryDetail', { orderId: item.orderId })}
+      >
         <Text style={styles.actionText}>ACTIONS</Text>
       </TouchableOpacity>
     </View>

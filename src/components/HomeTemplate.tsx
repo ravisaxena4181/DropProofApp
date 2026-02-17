@@ -18,7 +18,7 @@ const HomeTemplate: React.FC<AppTemplateProps> = ({ children }) => {
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>navigation.goBack()}>
             <Feather name="arrow-left" size={22} color="#000" />
           </TouchableOpacity>
 
